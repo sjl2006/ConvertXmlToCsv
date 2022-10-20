@@ -44,14 +44,19 @@ namespace ConvertXmlToCsvApp
             string row100 = "";
             string row900 = "";
 
+            if(string.IsNullOrEmpty(CSVIntervalData))
+            {
+                Console.WriteLine("Error: Cannot find CSVIntervalData");
+                return;
+            }
+
             // extract row 100 from CSVIntervalData
             var m = Regex.Match(CSVIntervalData, @"(\n100.+)\n");
             if (m.Success)
             {
                 row100 = m.Groups[1].Value;
                 row100 = Regex.Replace(row100, @"\t|\n|\r", "");
-                CSVIntervalData = Regex.Replace(CSVIntervalData, @"(\n100.+)", string.Empty).Trim();
-
+                CSVIntervalData = Regex.Replace(CSVIntervalData, @"(\n100.+)", string.Empty);
             }
             else
             {
@@ -65,8 +70,7 @@ namespace ConvertXmlToCsvApp
             {
                 row900 = m2.Groups[1].Value;
                 CSVIntervalData = Regex.Replace(CSVIntervalData, @"(\n900.*)", string.Empty);
-                CSVIntervalData = Regex.Replace(CSVIntervalData, @"^\s*$\n|\r", string.Empty, RegexOptions.Multiline).Trim();
-
+                CSVIntervalData = CSVIntervalData.TrimEnd();
             }
             else
             {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 
 namespace ConvertXmlToCsvApp
@@ -13,7 +14,24 @@ namespace ConvertXmlToCsvApp
             int row300count = 0;
             int row900count = 0;
 
+            if(string.IsNullOrEmpty(data))
+            {
+                Console.WriteLine("Error: Data provided for validation is empty");
+            }
+
             var csvRowIds = Regex.Matches(data, @"(?<=\n)\d+").ToList();
+
+            if (csvRowIds.First().Value != "100")
+            {
+                Console.WriteLine("Error: 100 row should be the first row");
+                return false;
+            }
+
+            if (csvRowIds.Last().Value != "900")
+            {
+                Console.WriteLine("Error: 900 row should be the first row");
+                return false;
+            }
 
             foreach (var rowId in csvRowIds)
             {
@@ -25,11 +43,6 @@ namespace ConvertXmlToCsvApp
                         if (row100count > 1)
                         {
                             Console.WriteLine("Error: 100 rows should only appear once inside the CSVIntervalData element");
-                            return false;
-                        }
-                        if (rowId != csvRowIds.First())
-                        {
-                            Console.WriteLine("Error: 100 row should be the first row");
                             return false;
                         }
                         break;
@@ -75,11 +88,6 @@ namespace ConvertXmlToCsvApp
                         if (row900count > 1)
                         {
                             Console.WriteLine("Error: 900 row should only appear once inside the CSVIntervalData element");
-                            return false;
-                        }
-                        if (rowId != csvRowIds.Last())
-                        {
-                            Console.WriteLine("Error: 900 row should be the last row");
                             return false;
                         }
                         break;
